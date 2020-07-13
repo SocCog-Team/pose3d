@@ -59,7 +59,13 @@ if plotresults
 
         k = 1;
         for t =1:nskip:size(coords3d,1)
-            movie1(:,:,:,k) = read(cam{1,1}, t);
+			tmp_frame = read(cam{1,1}, t);
+			if ~isequal(tmp_frame(:,:,2), tmp_frame(:,:,3))
+				%disp('')
+			else
+				tmp_frame = tmp_frame(:, :, 1);
+			end
+            movie1(:,:,:,k) = tmp_frame(:, :);
             k = k+1;
         end
     

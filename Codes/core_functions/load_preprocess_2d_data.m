@@ -193,10 +193,34 @@ function [data2d,data2dllh,flag_mis] = load_dlcdata(fullfilename,nframes,nfeatur
     data2dllh = data2d(:,3:3:end);
     data2d(:,3:3:end) = []; 
     
+	% different number of timepoints, should not happen, but... 
     if nframes~= size(data2d,1)
         flag_mis = 1;
-    end
+	end
     
+	% this is a hack to get some output for not fully synchronized video
+	if abs(nframes - size(data2d,1)) <= 5
+		flag_mis = 0;
+		dlcdata_rows = size(data2d,1);
+		
+		if (dlcdata_rows > nframes)
+			disp('Secondary data file contains too many timepoints');
+			% chop off the excess data
+			data2d = data2d(1:nframes, :);
+			data2dllh = data2dllh(1:nframes, :);
+		end
+
+		if (dlcdata_rows < nframes)
+			disp('Secondary data file contains too few timepoints');
+			% replicate the last row to make the secondary match the
+			% primary
+			data2d = [data2d; repmat(data2d(end, :), (nframes - dlcdata_rows), 1)];
+			data2dllh = [data2dllh; repmat(data2dllh(end, :), (nframes - dlcdata_rows), 1)];			
+		end		
+		
+	end
+	
+	% different feature/label sets, unrecoverable
     if nfeatures*2 ~= size(data2d,2)
         flag_mis = 1;
     end

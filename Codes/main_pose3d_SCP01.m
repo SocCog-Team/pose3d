@@ -9,17 +9,24 @@
 % If used in published work please see repository README.md for citation
 % and license information: https://github.com/SwathiSheshadri/pose3d
 
+dbstop if error;
+
 clear 
 close all
 clc
 
-base_path = fullfile('', '', '');
-cd();
+% allow to direct this to a specific location
+base_path = fullfile('/', 'Volumes', 'taskcontroller$', 'SCP_DATA', 'SCP-CTRL-01', 'POSE3D');
+if ~isfolder(base_path)
+	mkdir(base_path);
+end
+
+cd(base_path);
 
 
 %% Initializes experiment parameters as provided in your config file 
 %template_config_file %run your config file here
-template_config_file %run your config file here
+template_config_file_SCP01_v01 %run your config file here
 
 
 
